@@ -3,6 +3,7 @@ package todoapp;
 class main {
     public static void main(String[] args) {
         System.out.println("TEST");
+        Window w = new Window();
     }
 }
 
