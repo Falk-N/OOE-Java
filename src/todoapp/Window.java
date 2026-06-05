@@ -1,19 +1,21 @@
 package todoapp;
 
 import javax.swing.*;
-import java.awt.event.*;
 
 class Window extends JFrame {
 
     Window() {
+        System.setProperty("sun.java2d.uiScale", "2.0");
         setSize(600, 400);
-        setVisible(true);
+        String week[]= { "Monday","Tuesday","Wednesday", "Thursday","Friday","Saturday","Sunday"};
 
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent windowEvent){
-                System.exit(0);
-            }
-        });
+
+        JList l = new JList(week);
+
+        add(l);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
     }
 
 }
