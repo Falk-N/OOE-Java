@@ -17,7 +17,7 @@ public class ListEntry {
 
     //Set
 
-    public void setTitle (string title) {
+    public void setTitle (String title) {
         this.title = title;
     }
 
