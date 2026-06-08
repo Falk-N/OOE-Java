@@ -39,4 +39,9 @@ public class ListEntry {
     public boolean getCompleted () {
         return this.completed;
     }
+
+    @Override
+    public String toString() {
+        return this.title;
+    }
 }
