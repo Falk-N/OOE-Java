@@ -2,6 +2,7 @@ package todoapp;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 public class Window extends JFrame {
 
@@ -72,6 +73,10 @@ public class Window extends JFrame {
 
         for (ListEntry entry : list.getEntries()) {
             JPanel listEntry = new JPanel(new BorderLayout());
+            listEntry.setMinimumSize(new Dimension(0, 40));
+            listEntry.setPreferredSize(new Dimension(0, 40));
+            listEntry.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            listEntry.setAlignmentX(LEFT_ALIGNMENT);
 
             JLabel title = new JLabel(entry.getTitle());
             JButton delete = new JButton("X");
@@ -94,7 +99,7 @@ public class Window extends JFrame {
     }
 
     public void addTask() {
-        String s = (String)JOptionPane.showInputDialog(this, "", "Neue Aufgabe", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
+        String s = (String)JOptionPane.showInputDialog(this, "", "Aufgabe erstellen", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
         if (s != null) {
             list.addEntry(new ListEntry(1, s));
         }
