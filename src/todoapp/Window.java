@@ -3,6 +3,7 @@ package todoapp;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Color;
 
 public class Window extends JFrame {
 
@@ -12,6 +13,7 @@ public class Window extends JFrame {
 
     public Window() {
         setSize(600, 400);
+        setTitle("TODO-App");
 
         JPanel pc = new JPanel();
         JPanel pl = new JPanel();
@@ -33,8 +35,6 @@ public class Window extends JFrame {
 
 
         list = new ToDoList(1, "List 1");
-        list.addEntry(new ListEntry(1, "Milch kaufen"));
-        list.addEntry(new ListEntry(2, "Hausaufgaben machen"));
 
 
         //Listeneintrge zu JList-Komponente hinzufügen
@@ -80,9 +80,11 @@ public class Window extends JFrame {
 
             JLabel title = new JLabel(entry.getTitle());
             JButton delete = new JButton("X");
+            JButton done = new JButton("✓");
 
             listEntry.add(title, BorderLayout.CENTER);
             listEntry.add(delete, BorderLayout.EAST);
+            listEntry.add(done, BorderLayout.WEST);
 
             delete.addActionListener(e -> {
                 if ((JOptionPane.showConfirmDialog(this, "Aufgabe löschen?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION)) == 0) {
@@ -90,6 +92,15 @@ public class Window extends JFrame {
                     renderList();
                 }
             });
+
+            done.addActionListener(e -> {
+                entry.setCompleted(!entry.getCompleted());
+                renderList();
+            });
+
+            if(entry.getCompleted()) {
+                listEntry.setBackground(Color.GRAY);
+            }
 
             listContainer.add(listEntry);
         }
