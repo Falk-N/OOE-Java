@@ -5,7 +5,9 @@ import java.awt.BorderLayout;
 
 public class Window extends JFrame {
 
-    ToDoList list;
+    private ToDoList list;
+    private JLabel listName;
+    private JPanel listContainer;
 
     public Window() {
         setSize(600, 400);
@@ -31,13 +33,6 @@ public class Window extends JFrame {
             model.addElement(entry);
         }
 
-        JList<ListEntry> jList1 = new JList<>(model);
-
-
-
-
-
-
         JPanel p = new JPanel();
         pl.add(p);
         add(pl, BorderLayout.LINE_START);
@@ -46,12 +41,44 @@ public class Window extends JFrame {
         pr.add(p2);
         add(pr, BorderLayout.LINE_END);
 
+        listName = new JLabel ("Nichts ausgewählt");
 
-        pc.add(new JScrollPane(jList1), BorderLayout.CENTER);
+        listContainer = new JPanel();
+        listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
+        JScrollPane listScroll = new JScrollPane(listContainer);
+
+        pc.add(listName, BorderLayout.NORTH);
+        pc.add(listScroll, BorderLayout.CENTER);
+
         add(pc, BorderLayout.CENTER);
+
+        renderList();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 
+    private void renderList () {
+        listContainer.removeAll();
+
+        for (ListEntry entry : list.getEntries()) {
+            JPanel listEntry = new JPanel(new BorderLayout());
+
+            JLabel title = new JLabel(entry.getTitle());
+            JButton delete = new JButton("X");
+
+            listEntry.add(title, BorderLayout.CENTER);
+            listEntry.add(delete, BorderLayout.EAST);
+
+            delete.addActionListener(e -> {
+                list.getEntries().remove(entry);
+                renderList();
+            });
+
+            listContainer.add(listEntry);
+        }
+
+        listContainer.revalidate();
+        listContainer.repaint();
+    }
 }
