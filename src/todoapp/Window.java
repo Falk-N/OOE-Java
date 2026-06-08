@@ -18,7 +18,16 @@ public class Window extends JFrame {
 
         pc.setLayout(b);
         pl.setLayout(b);
-        pr.setLayout(b);
+        pr.setLayout(new BoxLayout(pr, BoxLayout.PAGE_AXIS));
+
+
+        JButton buttonAddTask = new JButton("Aufgabe erstellen");
+        buttonAddTask.addActionListener(e -> addTask());
+
+        JButton buttonDeleteList = new JButton("Liste löschen");
+        buttonDeleteList.addActionListener(e -> deleteList());
+
+
 
         list = new ToDoList(1, "List 1");
         list.addEntry(new ListEntry(1, "Milch kaufen"));
@@ -42,8 +51,8 @@ public class Window extends JFrame {
         pl.add(p);
         add(pl, BorderLayout.LINE_START);
 
-        JPanel p2 = new JPanel();
-        pr.add(p2);
+        pr.add(buttonAddTask);
+        pr.add(buttonDeleteList);
         add(pr, BorderLayout.LINE_END);
 
 
@@ -52,6 +61,22 @@ public class Window extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+    }
+
+
+    public void addTask() {
+        String s = (String)JOptionPane.showInputDialog(this, "", "Neue Aufgabe", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
+        if (s != null) {
+            list.addEntry(new ListEntry(1, s));
+        }
+
+        System.out.println(list.getEntries());
+
+    }
+
+    public void deleteList() {
+
+
     }
 
 }
