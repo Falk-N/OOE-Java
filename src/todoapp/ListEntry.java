@@ -8,7 +8,7 @@ public class ListEntry {
 
 
     //Constructor
-    public void ListEntry (int id, String title) {
+    public ListEntry (int id, String title) {
         this.id = id;
         this.title = title;
         this.completed = false;

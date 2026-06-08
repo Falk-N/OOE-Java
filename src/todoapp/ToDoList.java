@@ -3,7 +3,7 @@ package todoapp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class List {
+public class ToDoList {
     //Attributes
     private int id;
     private String name;
@@ -11,7 +11,7 @@ public class List {
 
 
     //Constructor
-    public void ListEntry (int id, String name) {
+    public ToDoList (int id, String name) {
         this.id = id;
         this.name = name;
         this.entries = new ArrayList<>();
@@ -25,11 +25,16 @@ public class List {
     }
 
     public void addEntry (ListEntry entry) {
-
+        entries.add(entry);
     }
 
     public void removeEntry (int entryId) {
-
+        for (int i = 0; i < entries.size(); i++) {
+            if(entries.get(i).getId() == entryId) {
+                entries.remove(i);
+                break;
+            }
+        }
     }
 
 
@@ -43,7 +48,7 @@ public class List {
         return this.name;
     }
 
-    public List<ListEntry> getList () {
+    public List<ListEntry> getEntries () {
         return this.entries;
     }
 }
