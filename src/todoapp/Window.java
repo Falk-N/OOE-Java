@@ -3,6 +3,8 @@ package todoapp;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.Color;
 
 public class Window extends JFrame {
@@ -71,7 +73,10 @@ public class Window extends JFrame {
     private void renderList () {
         listContainer.removeAll();
 
-        for (ListEntry entry : list.getEntries()) {
+        List<ListEntry> sortedEntries = new ArrayList<>(list.getEntries());
+        sortedEntries.sort((first, second) -> Boolean.compare(first.getCompleted(), second.getCompleted()));
+
+        for (ListEntry entry : sortedEntries) {
             JPanel listEntry = new JPanel(new BorderLayout());
             listEntry.setMinimumSize(new Dimension(0, 40));
             listEntry.setPreferredSize(new Dimension(0, 40));
