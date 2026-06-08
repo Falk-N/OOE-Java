@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 
 public class Window extends JFrame {
 
+    ToDoList list;
+
     public Window() {
         setSize(600, 400);
 
@@ -18,7 +20,7 @@ public class Window extends JFrame {
         pl.setLayout(b);
         pr.setLayout(b);
 
-        ToDoList list = new ToDoList(1, "List 1");
+        list = new ToDoList(1, "List 1");
         list.addEntry(new ListEntry(1, "Milch kaufen"));
         list.addEntry(new ListEntry(2, "Hausaufgaben machen"));
 
