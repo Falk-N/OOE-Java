@@ -80,8 +80,10 @@ public class Window extends JFrame {
             listEntry.add(delete, BorderLayout.EAST);
 
             delete.addActionListener(e -> {
-                list.getEntries().remove(entry);
-                renderList();
+                if ((JOptionPane.showConfirmDialog(this, "Aufgabe löschen?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION)) == 0) {
+                    list.getEntries().remove(entry);
+                    renderList();
+                }
             });
 
             listContainer.add(listEntry);
@@ -97,7 +99,7 @@ public class Window extends JFrame {
             list.addEntry(new ListEntry(1, s));
         }
 
-        System.out.println(list.getEntries());
+        renderList();
 
     }
 
