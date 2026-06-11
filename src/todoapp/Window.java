@@ -204,22 +204,18 @@ public class Window extends JFrame {
     }
 
     public void exportList() {
-        
         if ((JOptionPane.showConfirmDialog(this, "Alter Stand wird gelöscht!", "Liste exportieren?", JOptionPane.YES_NO_OPTION)) == 0) {
             try {
-            
-            PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+                PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+                List<ListEntry> entries = new ArrayList<>(currentList.getEntries());
 
-            List<ListEntry> entries = new ArrayList<>(currentList.getEntries());
-            for (ListEntry entry : entries) {
-                writer.append(entry.getTitle());
-                writer.println();
-            
-            }
-            writer.close();
-            } catch (IOException e) {
-                System.out.println(e);
-            }
+                for (ListEntry entry : entries) {
+                    writer.println(entry.getId() + "," + entry.getTitle() + "," + entry.getCompleted());
+                }
+                
+                writer.close();
+
+            } catch (IOException e) {System.out.println(e);}
         }
     }
 }
