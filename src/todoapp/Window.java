@@ -27,6 +27,8 @@ public class Window extends JFrame {
         setSize(600, 400);
         setTitle("TODO-App");
 
+        listName = new JLabel();
+
         JPanel pc = new JPanel();
         JPanel pl = new JPanel();
         JPanel pr = new JPanel();
@@ -78,7 +80,7 @@ public class Window extends JFrame {
         pr.add(buttonImportList);
         add(pr, BorderLayout.LINE_END);
 
-        listName = new JLabel ("Nichts ausgewählt");
+        
 
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
@@ -92,6 +94,7 @@ public class Window extends JFrame {
         renderList();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -148,6 +151,13 @@ public class Window extends JFrame {
     private void renderOverview() {
         overviewContainer.removeAll();
 
+        if (currentList != null) {
+            listName.setText(currentList.getName());
+        } else {
+            listName.setText("Nichts ausgewählt");
+        }
+        
+
         for(ToDoList list : lists) {
             JPanel listPanel = new JPanel(new BorderLayout());
             listPanel.setMinimumSize(new Dimension(0, 40));
@@ -157,15 +167,24 @@ public class Window extends JFrame {
             listPanel.setAlignmentX(LEFT_ALIGNMENT);
 
             JButton selectButton = new JButton(list.getName());
+
+            if(list == currentList) {
+                selectButton.setBackground(Color.GRAY);
+            }
             JButton deleteButton = new JButton("X");
 
             selectButton.addActionListener(e -> {
                 currentList = list;
-                listName.setText(list.getName());
                 renderList();
+                renderOverview();
             });
 
-            //delete button
+            deleteButton.addActionListener(e -> {
+                currentList = null;
+                lists.remove(list);
+                renderList();
+                renderOverview();
+            });
 
             listPanel.add(selectButton, BorderLayout.CENTER);
             listPanel.add(deleteButton, BorderLayout.EAST);
@@ -200,7 +219,7 @@ public class Window extends JFrame {
     }
 
     public void exportList() {
-        if ((JOptionPane.showConfirmDialog(this, "Alter Stand wird gelöscht!", "Liste exportieren?", JOptionPane.YES_NO_OPTION)) == 0) {
+        if ((JOptionPane.showConfirmDialog(this, "Alter Stand wird gelöscht!", "Liste exportieren?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE)) == 0) {
             try {
                 PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
                 List<ListEntry> entries = new ArrayList<>(currentList.getEntries());
@@ -216,22 +235,30 @@ public class Window extends JFrame {
     }
 
     public void importList() {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String s = "";
+        if(currentList == null) {
+            JOptionPane.showMessageDialog(this, "Keine Liste ausgewählt.", "Fehler", JOptionPane.ERROR_MESSAGE);
+        }
 
-            while ((s = reader.readLine()) != null) {
-                String[] t = s.split(",");
-                currentList.addEntry(new ListEntry(Integer.parseInt(t[0]), t[1], Boolean.parseBoolean(t[2])));
+        else {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(fileName));
+                String s = "";
+
+                while ((s = reader.readLine()) != null) {
+                    String[] t = s.split(",");
+                    currentList.addEntry(new ListEntry(Integer.parseInt(t[0]), t[1], Boolean.parseBoolean(t[2])));
 
 
-            }
+                }
 
-            reader.close();
+                reader.close();
 
-        } catch (IOException e) {System.err.println(e);}
+            } catch (IOException e) {System.err.println(e);}
 
-        renderList();
+            renderList();
+        }
+
+        
 
     }
 }
