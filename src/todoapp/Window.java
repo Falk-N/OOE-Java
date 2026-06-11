@@ -190,7 +190,10 @@ public class Window extends JFrame {
 
         ToDoList newList = new ToDoList(id, name);
         lists.add(newList);
+        currentList = newList;
+        listName.setText(newList.getName());
         renderOverview();
+        renderList();
     }
 
     public void addTask() {
