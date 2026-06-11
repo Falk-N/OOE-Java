@@ -9,7 +9,9 @@ import java.awt.Color;
 
 public class Window extends JFrame {
 
-    private ToDoList list;
+    private ToDoList currentList;
+    private List<ToDoList> lists = new ArrayList<>();
+    private JPanel overviewContainer;
     private JLabel listName;
     private JPanel listContainer;
 
@@ -24,7 +26,7 @@ public class Window extends JFrame {
         BorderLayout b = new BorderLayout();
 
         pc.setLayout(b);
-        pl.setLayout(b);
+        pl.setLayout(new BoxLayout(pl, BoxLayout.PAGE_AXIS));
         pr.setLayout(new BoxLayout(pr, BoxLayout.PAGE_AXIS));
 
 
@@ -35,19 +37,30 @@ public class Window extends JFrame {
         buttonDeleteList.addActionListener(e -> deleteList());
 
 
-
-        list = new ToDoList(1, "List 1");
+        lists.add(new ToDoList(1, "Liste 1"));
+        currentList = lists.get(0);
 
 
         //Listeneintrge zu JList-Komponente hinzufügen
         DefaultListModel<ListEntry> model = new DefaultListModel<>();
-        for (ListEntry entry : list.getEntries()) {
+        for (ListEntry entry : currentList.getEntries()) {
             model.addElement(entry);
         }
 
-        JPanel p = new JPanel();
-        pl.add(p);
+        JButton createListButton = new JButton("Liste erstellen");
+        createListButton.addActionListener(e -> createList());
+
+        overviewContainer = new JPanel();
+        overviewContainer.setLayout(new BoxLayout(overviewContainer, BoxLayout.Y_AXIS));
+
+        JScrollPane overviewScroll = new JScrollPane(overviewContainer);
+
+        pl.add(createListButton, BorderLayout.NORTH);
+        pl.add(overviewScroll, BorderLayout.CENTER);
+
         add(pl, BorderLayout.LINE_START);
+
+        renderOverview();
 
         pr.add(buttonAddTask);
         pr.add(buttonDeleteList);
@@ -73,7 +86,13 @@ public class Window extends JFrame {
     private void renderList () {
         listContainer.removeAll();
 
-        List<ListEntry> sortedEntries = new ArrayList<>(list.getEntries());
+        if(currentList == null) {
+            listContainer.revalidate();
+            listContainer.repaint();
+            return;
+        }
+
+        List<ListEntry> sortedEntries = new ArrayList<>(currentList.getEntries());
         sortedEntries.sort((first, second) -> Boolean.compare(first.getCompleted(), second.getCompleted()));
 
         for (ListEntry entry : sortedEntries) {
@@ -93,7 +112,7 @@ public class Window extends JFrame {
 
             delete.addActionListener(e -> {
                 if ((JOptionPane.showConfirmDialog(this, "Aufgabe löschen?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION)) == 0) {
-                    list.getEntries().remove(entry);
+                    currentList.getEntries().remove(entry);
                     renderList();
                 }
             });
@@ -114,10 +133,54 @@ public class Window extends JFrame {
         listContainer.repaint();
     }
 
+    private void renderOverview() {
+        overviewContainer.removeAll();
+
+        for(ToDoList list : lists) {
+            JPanel listPanel = new JPanel(new BorderLayout());
+            listPanel.setMinimumSize(new Dimension(0, 40));
+            listPanel.setPreferredSize(new Dimension(0, 40));
+            listPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+            listPanel.setAlignmentX(LEFT_ALIGNMENT);
+
+            JButton selectButton = new JButton(list.getName());
+            JButton deleteButton = new JButton("X");
+
+            selectButton.addActionListener(e -> {
+                currentList = list;
+                listName.setText(list.getName());
+                renderList();
+            });
+
+            //delete button
+
+            listPanel.add(selectButton, BorderLayout.CENTER);
+            listPanel.add(deleteButton, BorderLayout.EAST);
+            overviewContainer.add(listPanel);
+        }
+
+        overviewContainer.revalidate();
+        overviewContainer.repaint();
+    }
+
+    public void createList () {
+        String name =JOptionPane.showInputDialog (this, "Listenname:");
+        if(name == null || name.isBlank()) {
+            return;
+        }
+
+        int id = lists.size() + 1;
+
+        ToDoList newList = new ToDoList(id, name);
+        lists.add(newList);
+        renderOverview();
+    }
+
     public void addTask() {
         String s = (String)JOptionPane.showInputDialog(this, "", "Aufgabe erstellen", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
         if (s != null) {
-            list.addEntry(new ListEntry(1, s));
+            currentList.addEntry(new ListEntry(1, s));
         }
 
         renderList();
@@ -125,7 +188,7 @@ public class Window extends JFrame {
     }
 
     public void deleteList() {
-        System.out.println(list.getEntries());
+        System.out.println(currentList.getEntries());
 
     }
 
