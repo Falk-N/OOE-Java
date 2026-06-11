@@ -2,41 +2,30 @@ package todoapp;
 
 public class ListEntry {
     //Attributes
-    private int id;
     private String title;
     private boolean completed;
 
-
     //Constructor
-    public ListEntry (int id, String title, boolean completed) {
-        this.id = id;
+    public ListEntry(String title, boolean completed) {
         this.title = title;
         this.completed = completed;
     }
 
-
-    //Set
-
-    public void setTitle (String title) {
+    //Setter
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setCompleted (boolean completed) {
+    public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
-
-    //Get
-
-    public int getId () {
-        return this.id;
-    }
-
-    public String getTitle () {
+    //Getter
+    public String getTitle() {
         return this.title;
     }
 
-    public boolean getCompleted () {
+    public boolean getCompleted() {
         return this.completed;
     }
 
