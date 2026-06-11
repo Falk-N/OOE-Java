@@ -210,7 +210,7 @@ public class Window extends JFrame {
             
             PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
 
-            List<ListEntry> entries = new ArrayList<>(list.getEntries());
+            List<ListEntry> entries = new ArrayList<>(currentList.getEntries());
             for (ListEntry entry : entries) {
                 writer.append(entry.getTitle());
                 writer.println();
