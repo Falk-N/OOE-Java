@@ -36,17 +36,6 @@ public class Window extends JFrame {
         JButton buttonDeleteList = new JButton("Liste löschen");
         buttonDeleteList.addActionListener(e -> deleteList());
 
-
-        lists.add(new ToDoList(1, "Liste 1"));
-        currentList = lists.get(0);
-
-
-        //Listeneintrge zu JList-Komponente hinzufügen
-        DefaultListModel<ListEntry> model = new DefaultListModel<>();
-        for (ListEntry entry : currentList.getEntries()) {
-            model.addElement(entry);
-        }
-
         JButton createListButton = new JButton("Liste erstellen");
         createListButton.addActionListener(e -> createList());
 
@@ -178,6 +167,11 @@ public class Window extends JFrame {
     }
 
     public void addTask() {
+        if(currentList == null) {
+            JOptionPane.showMessageDialog (this,"Keine Liste ausgewählt!", "Achtung", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String s = (String)JOptionPane.showInputDialog(this, "", "Aufgabe erstellen", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
         if (s != null) {
             currentList.addEntry(new ListEntry(1, s));
