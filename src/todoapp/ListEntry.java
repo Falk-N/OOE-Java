@@ -8,10 +8,10 @@ public class ListEntry {
 
 
     //Constructor
-    public ListEntry (int id, String title) {
+    public ListEntry (int id, String title, boolean completed) {
         this.id = id;
         this.title = title;
-        this.completed = false;
+        this.completed = completed;
     }
 
 

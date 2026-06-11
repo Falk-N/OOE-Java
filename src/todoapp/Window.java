@@ -10,6 +10,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 public class Window extends JFrame {
 
@@ -46,6 +48,9 @@ public class Window extends JFrame {
         JButton buttonExportList = new JButton("Liste exportieren");
         buttonExportList.addActionListener(e -> exportList());
 
+        JButton buttonImportList = new JButton("Liste importieren");
+        buttonImportList.addActionListener(e -> importList());
+
 
         lists.add(new ToDoList(1, "Liste 1"));
         currentList = lists.get(0);
@@ -75,6 +80,7 @@ public class Window extends JFrame {
         pr.add(buttonAddTask);
         pr.add(buttonDeleteList);
         pr.add(buttonExportList);
+        pr.add(buttonImportList);
         add(pr, BorderLayout.LINE_END);
 
         listName = new JLabel ("Nichts ausgewählt");
@@ -191,7 +197,7 @@ public class Window extends JFrame {
     public void addTask() {
         String s = (String)JOptionPane.showInputDialog(this, "", "Aufgabe erstellen", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
         if (s != null) {
-            currentList.addEntry(new ListEntry(1, s));
+            currentList.addEntry(new ListEntry(1, s, false));
         }
 
         renderList();
@@ -212,10 +218,30 @@ public class Window extends JFrame {
                 for (ListEntry entry : entries) {
                     writer.println(entry.getId() + "," + entry.getTitle() + "," + entry.getCompleted());
                 }
-                
+
                 writer.close();
 
-            } catch (IOException e) {System.out.println(e);}
+            } catch (IOException e) {System.err.println(e);}
         }
+    }
+
+    public void importList() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String s = "";
+
+            while ((s = reader.readLine()) != null) {
+                String[] t = s.split(",");
+                currentList.addEntry(new ListEntry(Integer.parseInt(t[0]), t[1], Boolean.parseBoolean(t[2])));
+
+
+            }
+
+            reader.close();
+
+        } catch (IOException e) {System.err.println(e);}
+
+        renderList();
+
     }
 }
