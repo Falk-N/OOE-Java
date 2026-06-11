@@ -6,6 +6,10 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Window extends JFrame {
 
@@ -14,8 +18,11 @@ public class Window extends JFrame {
     private JPanel overviewContainer;
     private JLabel listName;
     private JPanel listContainer;
+    String fileName;
 
     public Window() {
+
+        fileName = "tasks.txt";
         setSize(600, 400);
         setTitle("TODO-App");
 
@@ -35,6 +42,9 @@ public class Window extends JFrame {
 
         JButton buttonDeleteList = new JButton("Liste löschen");
         buttonDeleteList.addActionListener(e -> deleteList());
+
+        JButton buttonExportList = new JButton("Liste exportieren");
+        buttonExportList.addActionListener(e -> exportList());
 
 
         lists.add(new ToDoList(1, "Liste 1"));
@@ -64,6 +74,7 @@ public class Window extends JFrame {
 
         pr.add(buttonAddTask);
         pr.add(buttonDeleteList);
+        pr.add(buttonExportList);
         add(pr, BorderLayout.LINE_END);
 
         listName = new JLabel ("Nichts ausgewählt");
@@ -192,4 +203,23 @@ public class Window extends JFrame {
 
     }
 
+    public void exportList() {
+        
+        if ((JOptionPane.showConfirmDialog(this, "Alter Stand wird gelöscht!", "Liste exportieren?", JOptionPane.YES_NO_OPTION)) == 0) {
+            try {
+            
+            PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+
+            List<ListEntry> entries = new ArrayList<>(list.getEntries());
+            for (ListEntry entry : entries) {
+                writer.append(entry.getTitle());
+                writer.println();
+            
+            }
+            writer.close();
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+        }
+    }
 }
