@@ -50,7 +50,7 @@ public class Window extends JFrame {
         buttonImportList.addActionListener(e -> importList());
 
 
-        lists.add(new ToDoList(1, "Liste 1"));
+        lists.add(new ToDoList("Liste 1"));
         currentList = lists.get(0);
 
 
@@ -201,9 +201,7 @@ public class Window extends JFrame {
             return;
         }
 
-        int id = lists.size() + 1;
-
-        ToDoList newList = new ToDoList(id, name);
+        ToDoList newList = new ToDoList(name);
         lists.add(newList);
         renderOverview();
     }
@@ -211,7 +209,7 @@ public class Window extends JFrame {
     public void addTask() {
         String s = (String)JOptionPane.showInputDialog(this, "", "Aufgabe erstellen", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
         if (s != null) {
-            currentList.addEntry(new ListEntry(1, s, false));
+            currentList.addEntry(new ListEntry(s, false));
         }
 
         renderList();
@@ -225,7 +223,7 @@ public class Window extends JFrame {
                 List<ListEntry> entries = new ArrayList<>(currentList.getEntries());
 
                 for (ListEntry entry : entries) {
-                    writer.println(entry.getId() + "," + entry.getTitle() + "," + entry.getCompleted());
+                    writer.println(entry.getTitle() + "," + entry.getCompleted());
                 }
 
                 writer.close();
@@ -246,7 +244,7 @@ public class Window extends JFrame {
 
                 while ((s = reader.readLine()) != null) {
                     String[] t = s.split(",");
-                    currentList.addEntry(new ListEntry(Integer.parseInt(t[0]), t[1], Boolean.parseBoolean(t[2])));
+                    currentList.addEntry(new ListEntry(t[0], Boolean.parseBoolean(t[1])));
 
 
                 }
