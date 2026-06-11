@@ -14,45 +14,22 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 
 public class Window extends JFrame {
-
     private ToDoList currentList;
     private List<ToDoList> lists = new ArrayList<>();
     private JPanel overviewContainer;
-    private JLabel listName;
+    private JLabel labelListName;
     private JPanel listContainer;
-    String fileName;
+    private String fileName;
 
     public Window() {
+        super("ToDo-Liste");
+
+        //Dateiname zum Speichern der Listen
         fileName = "tasks.txt";
-        setSize(600, 400);
-        setTitle("TODO-App");
 
-        listName = new JLabel();
-
-        JPanel pc = new JPanel();
-        JPanel pl = new JPanel();
-        JPanel pr = new JPanel();
-
-        BorderLayout b = new BorderLayout();
-
-        pc.setLayout(b);
-        pl.setLayout(new BoxLayout(pl, BoxLayout.PAGE_AXIS));
-        pr.setLayout(new BoxLayout(pr, BoxLayout.PAGE_AXIS));
-
-
-        JButton buttonAddTask = new JButton("Aufgabe erstellen");
-        buttonAddTask.addActionListener(e -> addTask());
-
-        JButton buttonExportList = new JButton("Liste exportieren");
-        buttonExportList.addActionListener(e -> exportList());
-
-        JButton buttonImportList = new JButton("Liste importieren");
-        buttonImportList.addActionListener(e -> importList());
-
-
+        //Initiale Liste erstellen
         lists.add(new ToDoList("Liste 1"));
         currentList = lists.get(0);
-
 
         //Listeneintrge zu JList-Komponente hinzufügen
         DefaultListModel<ListEntry> model = new DefaultListModel<>();
@@ -60,42 +37,61 @@ public class Window extends JFrame {
             model.addElement(entry);
         }
 
+        //Panel Links
+        JPanel pl = new JPanel();
+        pl.setLayout(new BoxLayout(pl, BoxLayout.PAGE_AXIS));
+
         JButton createListButton = new JButton("Liste erstellen");
         createListButton.addActionListener(e -> createList());
+        pl.add(createListButton, BorderLayout.NORTH);
 
         overviewContainer = new JPanel();
         overviewContainer.setLayout(new BoxLayout(overviewContainer, BoxLayout.Y_AXIS));
-
         JScrollPane overviewScroll = new JScrollPane(overviewContainer);
-
-        pl.add(createListButton, BorderLayout.NORTH);
         pl.add(overviewScroll, BorderLayout.CENTER);
 
-        add(pl, BorderLayout.LINE_START);
+        getContentPane().add(pl, BorderLayout.LINE_START);
 
-        renderOverview();
+        //Panel Mitte
+        JPanel pc = new JPanel();
+        pc.setLayout(new BorderLayout());
 
-        pr.add(buttonAddTask);
-        pr.add(buttonExportList);
-        pr.add(buttonImportList);
-        add(pr, BorderLayout.LINE_END);
-
-        
+        labelListName = new JLabel();
+        pc.add(labelListName, BorderLayout.NORTH);
 
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
         JScrollPane listScroll = new JScrollPane(listContainer);
-
-        pc.add(listName, BorderLayout.NORTH);
         pc.add(listScroll, BorderLayout.CENTER);
 
-        add(pc, BorderLayout.CENTER);
+        getContentPane().add(pc, BorderLayout.CENTER);
 
-        renderList();
+        //Panel Rechts
+        JPanel pr = new JPanel();
+        pr.setLayout(new BoxLayout(pr, BoxLayout.PAGE_AXIS));
 
+        JButton buttonAddTask = new JButton("Aufgabe erstellen");
+        buttonAddTask.addActionListener(e -> addTask());
+        pr.add(buttonAddTask);
+
+        JButton buttonExportList = new JButton("Liste exportieren");
+        buttonExportList.addActionListener(e -> exportList());
+        pr.add(buttonExportList);
+
+        JButton buttonImportList = new JButton("Liste importieren");
+        buttonImportList.addActionListener(e -> importList());
+        pr.add(buttonImportList);
+
+        getContentPane().add(pr, BorderLayout.LINE_END);
+
+        setSize(600, 400);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        renderOverview();
+        renderList();
     }
 
     private void renderList () {
@@ -152,9 +148,9 @@ public class Window extends JFrame {
         overviewContainer.removeAll();
 
         if (currentList != null) {
-            listName.setText(currentList.getName());
+            labelListName.setText(currentList.getName());
         } else {
-            listName.setText("Nichts ausgewählt");
+            labelListName.setText("Nichts ausgewählt");
         }
         
 
@@ -195,34 +191,40 @@ public class Window extends JFrame {
         overviewContainer.repaint();
     }
 
-    public void createList () {
-        String name =JOptionPane.showInputDialog (this, "Listenname:");
+    public void createList() {
+        String name = (String)JOptionPane.showInputDialog(
+            this, "Listenname:", "Neue Liste", JOptionPane.QUESTION_MESSAGE, null, null, "Liste");
+
         if(name == null || name.isBlank()) {
             return;
         }
 
-        ToDoList newList = new ToDoList(name);
-        lists.add(newList);
+        lists.add(new ToDoList(name));
+
         renderOverview();
     }
 
     public void addTask() {
-        String s = (String)JOptionPane.showInputDialog(this, "", "Aufgabe erstellen", JOptionPane.PLAIN_MESSAGE, null, null, "Neue Aufgabe");
-        if (s != null) {
-            currentList.addEntry(new ListEntry(s, false));
+        String title = (String)JOptionPane.showInputDialog(
+            this, "Titel:", "Neue Aufgabe", JOptionPane.QUESTION_MESSAGE, null, null, "Aufgabe");
+        
+        if (title == null || title.isBlank()) {
+            return;
         }
 
-        renderList();
+        currentList.addEntry(new ListEntry(title, false));
 
+        renderList();
     }
 
     public void exportList() {
-        if ((JOptionPane.showConfirmDialog(this, "Alter Stand wird gelöscht!", "Liste exportieren?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE)) == 0) {
+        if ((JOptionPane.showConfirmDialog(
+            this, "Alter Stand wird gelöscht!", "Liste exportieren?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE)) == 0) {
+            
             try {
                 PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
-                List<ListEntry> entries = new ArrayList<>(currentList.getEntries());
 
-                for (ListEntry entry : entries) {
+                for (ListEntry entry : currentList.getEntries()) {
                     writer.println(entry.getTitle() + "," + entry.getCompleted());
                 }
 
@@ -233,20 +235,20 @@ public class Window extends JFrame {
     }
 
     public void importList() {
-        if(currentList == null) {
-            JOptionPane.showMessageDialog(this, "Keine Liste ausgewählt.", "Fehler", JOptionPane.ERROR_MESSAGE);
-        }
+        if (currentList == null) {
+            JOptionPane.showMessageDialog(
+                this, "Keine Liste ausgewählt!", "Fehler", JOptionPane.ERROR_MESSAGE);
 
-        else {
+        } else {
+            String s = "";
+            String[] t;
+            
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(fileName));
-                String s = "";
 
                 while ((s = reader.readLine()) != null) {
-                    String[] t = s.split(",");
+                    t = s.split(",");
                     currentList.addEntry(new ListEntry(t[0], Boolean.parseBoolean(t[1])));
-
-
                 }
 
                 reader.close();
@@ -254,9 +256,7 @@ public class Window extends JFrame {
             } catch (IOException e) {System.err.println(e);}
 
             renderList();
+
         }
-
-        
-
     }
 }
