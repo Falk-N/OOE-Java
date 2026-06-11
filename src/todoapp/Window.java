@@ -1,24 +1,27 @@
 package todoapp;
 
-import javax.swing.*;
+import java.util.ArrayList;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.Color;
+import javax.swing.*;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.FileReader;
-import java.io.BufferedReader;
+import java.io.IOException;
 
 public class Window extends JFrame {
+    private ArrayList<ToDoList> lists;
     private ToDoList currentList;
-    private List<ToDoList> lists = new ArrayList<>();
-    private JPanel overviewContainer;
-    private JLabel labelListName;
+
     private JPanel listContainer;
+    private JPanel overviewContainer;
+    private JLabel labelListName;    
+    
     private String fileName;
 
     public Window() {
@@ -28,6 +31,7 @@ public class Window extends JFrame {
         fileName = "tasks.txt";
 
         //Initiale Liste erstellen
+        lists = new ArrayList<>();
         lists.add(new ToDoList("Liste 1"));
         currentList = lists.get(0);
 
@@ -103,7 +107,7 @@ public class Window extends JFrame {
             return;
         }
 
-        List<ListEntry> sortedEntries = new ArrayList<>(currentList.getEntries());
+        ArrayList<ListEntry> sortedEntries = new ArrayList<>(currentList.getEntries());
         sortedEntries.sort((first, second) -> Boolean.compare(first.getCompleted(), second.getCompleted()));
 
         for (ListEntry entry : sortedEntries) {
