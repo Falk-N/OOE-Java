@@ -41,9 +41,6 @@ public class Window extends JFrame {
         JButton buttonAddTask = new JButton("Aufgabe erstellen");
         buttonAddTask.addActionListener(e -> addTask());
 
-        JButton buttonDeleteList = new JButton("Liste löschen");
-        buttonDeleteList.addActionListener(e -> deleteList());
-
         JButton buttonExportList = new JButton("Liste exportieren");
         buttonExportList.addActionListener(e -> exportList());
 
@@ -77,7 +74,6 @@ public class Window extends JFrame {
         renderOverview();
 
         pr.add(buttonAddTask);
-        pr.add(buttonDeleteList);
         pr.add(buttonExportList);
         pr.add(buttonImportList);
         add(pr, BorderLayout.LINE_END);
@@ -200,11 +196,6 @@ public class Window extends JFrame {
         }
 
         renderList();
-
-    }
-
-    public void deleteList() {
-        System.out.println(currentList.getEntries());
 
     }
 
