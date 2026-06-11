@@ -20,8 +20,10 @@ public class Window extends JFrame {
     private JPanel overviewContainer;
     private JLabel listName;
     private JPanel listContainer;
+    String fileName;
 
     public Window() {
+        fileName = "tasks.txt";
         setSize(600, 400);
         setTitle("TODO-App");
 
